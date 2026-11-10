@@ -7,6 +7,7 @@ const searchBar = document.getElementById("location-input");
 const searchForm = document.querySelector("form");
 const unitBtn = document.getElementById("unit");
 const unitSpan = document.getElementById("unit-text");
+const searchResultsDiv = document.getElementById("search-results");
 let displayedLocation;
 let weatherData;
 let searchTerm;
@@ -75,20 +76,25 @@ searchBar.addEventListener("keyup", (e) => {
 
 searchForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+    searchResultsDiv.innerHTML = "";
     const results = await searchLocation(searchTerm);
     results.forEach(city => {
         const searchDiv = document.createElement("div");
+        searchDiv.className = "search-result-item";
         const cityName = document.createElement("h6");
         const countryName = document.createElement("p");
-
-        searchDiv.value = `${city.latitude},${city.longitude}`
         cityName.textContent = city.name;
         countryName.textContent = city.country;
-
         searchDiv.append(cityName, countryName);
-        searchForm.append(searchDiv);
+        searchResultsDiv.append(searchDiv);
     });
 })
+
+document.addEventListener("click", (e) => {
+    if (!searchForm.contains(e.target)) {
+        searchResultsDiv.innerHTML = "";
+    }
+});
 
 unitBtn.addEventListener("click", async () => {
     let currentUnit = unitSpan.textContent.toLowerCase().trim();

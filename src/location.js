@@ -20,7 +20,13 @@ export const getUserLocation = async () => {
 export const searchLocation = async (search) => {
     const response = await fetch(`${endpoint}${search}&count=10`);
     const data = await response.json();
+    if (!data.results) return [];
     const results = data.results;
-    const filteredResults = results.map((city) => [city.name, city.country, city.latitude, city.longitude])
+    const filteredResults = results.map((city) => ({
+        name: city.name,
+        country: city.country,
+        latitude: city.latitude,
+        longitude: city.longitude,
+    }));
     return filteredResults;
 }
