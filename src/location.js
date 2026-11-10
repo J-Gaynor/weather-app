@@ -22,5 +22,5 @@ export const searchLocation = async (search) => {
     const data = await response.json();
     const results = data.results;
     const filteredResults = results.map((city) => [city.name, city.country, city.latitude, city.longitude])
-    console.log(filteredResults)
+    return filteredResults;
 }
