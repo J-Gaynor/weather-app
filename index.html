@@ -2,15 +2,30 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather App</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
 </head>
 
 <body>
-  <div id="weather-display"></div>
-  <script type="module" src="/src/main.js"></script>
+    <header>
+        <nav id="header-nav">
+            <h1>Super Weather</h1>
+            <form id="weather-search">
+                <input type="text" id="location-input">
+            </form>
+        </nav>
+    </header>
+
+    <main>
+        <div id="weather-display"></div>
+        <script type="module" src="/src/main.js"></script>
+    </main>
+
+    <footer>
+        © Joseph G Weather Industries. 2026.
+    </footer>
 </body>
 
 </html>

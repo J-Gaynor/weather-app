@@ -1,3 +1,5 @@
+const endpoint = import.meta.env.VITE_CITIES_ENDPOINT;
+
 export const getUserLocation = async () => {
     return new Promise((resolve, reject) => {
         if (!navigator.geolocation) {
@@ -13,4 +15,12 @@ export const getUserLocation = async () => {
             reject(error);
         })
     })
+}
+
+export const searchLocation = async (search) => {
+    const response = await fetch(`${endpoint}${search}&count=10`);
+    const data = await response.json();
+    const results = data.results;
+    const filteredResults = results.map((city) => [city.name, city.country, city.latitude, city.longitude])
+    console.log(filteredResults)
 }

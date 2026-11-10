@@ -1,15 +1,20 @@
 import './style.css'
-import { getUserLocation } from './location';
+import { getUserLocation, searchLocation } from './location';
 import { weatherApi } from './weatherApi'
 
 const weatherDisplayDiv = document.getElementById("weather-display");
+const searchBar = document.getElementById("location-input");
+const searchForm = document.querySelector("form");
 let weatherData;
+let searchTerm;
 
 (async () => {
     const userCoords = await getUserLocation();
     weatherData = await weatherApi(userCoords);
     displayWeather();
 })();
+
+// IF !WEATHERDATA - LOADING, ELSE - DISPLAY
 
 const displayWeather = () => {
     console.log(weatherData.days[0]["datetime"])
@@ -49,5 +54,13 @@ const createWeatherDiv = (i) => {
     weatherDiv.append(weatherDate, feelsLike, tempMin, tempMax, conditions);
 
     return weatherDiv;
-
 }
+
+searchBar.addEventListener("keyup", (e) => {
+    searchTerm = e.target.value;
+})
+
+searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    setTimeout(searchLocation(searchTerm), 0)
+})
