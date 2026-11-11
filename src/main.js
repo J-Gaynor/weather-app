@@ -22,6 +22,7 @@ let searchTerm;
 // IF !WEATHERDATA - LOADING, ELSE - DISPLAY
 
 const displayWeather = () => {
+    weatherDisplayDiv.innerHTML = "";
     const todaysWeather = document.createElement("div");
     const futureWeather = document.createElement("div");
 
@@ -87,6 +88,12 @@ searchForm.addEventListener("submit", async (e) => {
         countryName.textContent = city.country;
         searchDiv.append(cityName, countryName);
         searchResultsDiv.append(searchDiv);
+
+        searchDiv.addEventListener("click", async () => {
+            weatherData = await weatherApi({ latitude: city.latitude, longitude: city.longitude }, unitSpan.textContent.toLowerCase().trim());
+            displayWeather();
+            searchResultsDiv.innerHTML = "";
+        })
     });
 })
 
