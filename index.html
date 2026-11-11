@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+  <script type="module" crossorigin src="./assets/index-DaSUjQFx.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-Dp1GLn9p.css">
+</head>
+
+<body>
+    <header>
+        <nav id="header-nav">
+            <h1>Super Weather</h1>
+            <form id="weather-search">
+                <input type="text" id="location-input" placeholder="Search city...">
+                <div id="search-results"></div>
+            </form>
+            <button id="unit"><span id="unit-text">°C</span><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+                    height="1em" viewBox="0 0 24 24">
+                    <title>reload-fill</title>
+                    <path fill="currentColor"
+                        d="M5.001 10H5a.997.997 0 0 1-1-1V3a1 1 0 0 1 2 0v2.817a8.615 8.615 0 0 1 13.919 2.789a.999.999 0 1 1-1.838.788A6.615 6.615 0 0 0 6.729 8H11a1 1 0 0 1 0 2Zm12.27 6H13a1 1 0 0 1 0-2h6a1 1 0 0 1 1 1v6a1 1 0 0 1-2 0v-2.817a8.615 8.615 0 0 1-13.919-2.789a.999.999 0 1 1 1.838-.788A6.614 6.614 0 0 0 17.271 16" />
+                </svg></button>
+        </nav>
+    </header>
+
+    <main>
+        <div id="forecast-message">
+            <h2>15 day forecast for <span id="current-location"></span>.</h2>
+        </div>
+        <div id="weather-display"></div>
+    </main>
+
+    <footer>
+        © Joseph G Weather Industries. 2026.
+    </footer>
+</body>
+
+</html>
