@@ -3,25 +3,41 @@ import { getUserLocation, searchLocation } from './location';
 import { weatherApi } from './weatherApi'
 
 const weatherDisplayDiv = document.getElementById("weather-display");
+const forecastMessageDiv = document.getElementById("forecast-message");
+const main = document.querySelector("main");
 const searchBar = document.getElementById("location-input");
 const searchForm = document.querySelector("form");
 const unitBtn = document.getElementById("unit");
 const unitSpan = document.getElementById("unit-text");
 const searchResultsDiv = document.getElementById("search-results");
+const viewingLocation = document.getElementById("current-location");
 let displayedLocation;
 let weatherData;
 let searchTerm;
 
+const showLoading = () => {
+    main.innerHTML = `
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <p>Loading weather forecast...</p>
+        </div>
+    `;
+};
+
 (async () => {
+    showLoading();
     const userCoords = await getUserLocation();
     displayedLocation = userCoords;
-    weatherData = await weatherApi(userCoords, "metric");
+    if (viewingLocation && userCoords.cityName) {
+        viewingLocation.textContent = userCoords.cityName;
+    }
+    const apiUnit = unitSpan.textContent.includes("F") ? "us" : "metric";
+    weatherData = await weatherApi(userCoords, apiUnit);
     displayWeather();
 })();
 
-// IF !WEATHERDATA - LOADING, ELSE - DISPLAY
-
 const displayWeather = () => {
+    main.innerHTML = "";
     weatherDisplayDiv.innerHTML = "";
     const todaysWeather = document.createElement("div");
     const futureWeather = document.createElement("div");
@@ -39,6 +55,7 @@ const displayWeather = () => {
 
     weatherDisplayDiv.appendChild(todaysWeather);
     weatherDisplayDiv.appendChild(futureWeather);
+    main.append(forecastMessageDiv, weatherDisplayDiv);
 }
 
 const createWeatherDiv = (i) => {
@@ -52,11 +69,26 @@ const createWeatherDiv = (i) => {
     const tempMax = document.createElement("h6");
     const conditions = document.createElement("p");
 
-    feelsLikeNumber.textContent = weatherData.days[i]["feelslike"];
-    tempMinNumber.textContent = weatherData.days[i]["tempmin"];
-    tempMaxNumber.textContent = weatherData.days[i]["tempmax"];
+    const isFahrenheit = unitSpan.textContent.includes("F");
+    const rawFeels = weatherData.days[i]["feelslike"];
+    const rawMin = weatherData.days[i]["tempmin"];
+    const rawMax = weatherData.days[i]["tempmax"];
 
-    weatherDate.textContent = weatherData.days[i]["datetime"];
+    feelsLikeNumber.textContent = isFahrenheit ? toFarenheit(rawFeels) : rawFeels;
+    tempMinNumber.textContent = isFahrenheit ? toFarenheit(rawMin) : rawMin;
+    tempMaxNumber.textContent = isFahrenheit ? toFarenheit(rawMax) : rawMax;
+
+    const rawDate = weatherData.days[i]["datetime"];
+    let formattedDate = rawDate;
+    try {
+        const parts = rawDate.split("-");
+        const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+        formattedDate = i === 0 ? "Today" : dateObj.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
+    } catch {
+        formattedDate = rawDate;
+    }
+    weatherDate.textContent = formattedDate;
+
     feelsLike.append("Feels like ", feelsLikeNumber);
     tempMin.append("Min: ", tempMinNumber);
     tempMax.append("Max: ", tempMaxNumber);
@@ -66,7 +98,7 @@ const createWeatherDiv = (i) => {
     tempMinNumber.className = "temp-number";
     tempMaxNumber.className = "temp-number";
 
-    weatherDiv.append(weatherDate, feelsLike, tempMin, tempMax, conditions);
+    weatherDiv.append(weatherDate, conditions, feelsLike, tempMin, tempMax);
 
     return weatherDiv;
 }
@@ -90,9 +122,16 @@ searchForm.addEventListener("submit", async (e) => {
         searchResultsDiv.append(searchDiv);
 
         searchDiv.addEventListener("click", async () => {
-            weatherData = await weatherApi({ latitude: city.latitude, longitude: city.longitude }, unitSpan.textContent.toLowerCase().trim());
-            displayWeather();
+            displayedLocation = { latitude: city.latitude, longitude: city.longitude };
+            if (viewingLocation) {
+                viewingLocation.textContent = `${city.name}, ${city.country}`;
+            }
             searchResultsDiv.innerHTML = "";
+            searchBar.value = "";
+            showLoading();
+            const apiUnit = unitSpan.textContent.includes("F") ? "us" : "metric";
+            weatherData = await weatherApi(displayedLocation, apiUnit);
+            displayWeather();
         })
     });
 })
@@ -106,18 +145,17 @@ document.addEventListener("click", (e) => {
 unitBtn.addEventListener("click", async () => {
     let currentUnit = unitSpan.textContent.toLowerCase().trim();
     const tempNumbers = Array.from(document.getElementsByClassName("temp-number"));
-    if (currentUnit === "celsius") {
-        unitSpan.textContent = "Farenheit";
+    if (currentUnit === "°c") {
+        unitSpan.textContent = "°F";
         tempNumbers.forEach(element => {
             element.textContent = toFarenheit(element.textContent);
         })
-    } else if (currentUnit === "farenheit") {
-        unitSpan.textContent = "Celsius";
+    } else if (currentUnit === "°f") {
+        unitSpan.textContent = "°C";
         tempNumbers.forEach(element => {
             element.textContent = toCelsius(element.textContent);
         })
     }
-    displayWeather();
 })
 
 const toFarenheit = (current) => {

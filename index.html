@@ -16,7 +16,7 @@
                 <input type="text" id="location-input" placeholder="Search city...">
                 <div id="search-results"></div>
             </form>
-            <button id="unit"><span id="unit-text">Celsius</span><svg xmlns="http://www.w3.org/2000/svg" width="1em"
+            <button id="unit"><span id="unit-text">°C</span><svg xmlns="http://www.w3.org/2000/svg" width="1em"
                     height="1em" viewBox="0 0 24 24">
                     <title>reload-fill</title>
                     <path fill="currentColor"
@@ -26,6 +26,9 @@
     </header>
 
     <main>
+        <div id="forecast-message">
+            <h2>15 day forecast for <span id="current-location"></span>.</h2>
+        </div>
         <div id="weather-display"></div>
         <script type="module" src="/src/main.js"></script>
     </main>
